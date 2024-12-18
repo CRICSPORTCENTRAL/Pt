@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JW Player</title>
+  
+  <!-- JW Player Library (replace with your actual key) -->
+  <script src="https://content.jwplatform.com/libraries/KB5zFt7A.js" async defer></script>
+</head>
+<body>
+  <h1 style="text-align: center;">M3U8 Streaming with JW Player</h1>
+  <div id="player" style="width: 100%; height: 500px;"></div> <!-- JW Player container -->
+
+  <script>
+    window.onload = function() {
+      // Ensure jwplayer is loaded before initializing
+      if (typeof jwplayer === 'undefined') {
+        console.error("JW Player library failed to load.");
+        return;
+      }
+
+      // Your .m3u8 URL (replace with the actual URL)
+      const videoUrl = "https://dai.fancode.com/primary/114010_english_hls_9915ta-no/index.m3u8"; // Replace with your .m3u8 URL
+
+      // JW Player setup
+      const player = jwplayer("player").setup({
+        file: videoUrl,
+        width: "100%",
+        height: "100%",
+        autostart: true,
+        controls: true,
+      });
+
+      // Event: Video is ready
+      player.on("ready", () => {
+        console.log("JW Player is ready");
+      });
+
+      // Event: Playback started
+      player.on("play", () => {
+        console.log("Playback started");
+      });
+
+      // Event: Video buffering
+      player.on("buffer", (event) => {
+        console.log("Buffering event:", event);
+      });
+
+      // Event: Error handling
+      player.on("error", (event) => {
+        console.error("Error encountered:", event);
+      });
+
+      // XHR Monitoring for Debugging
+      const originalXhr = window.XMLHttpRequest;
+      class LoggingXHR extends originalXhr {
+        open(method, url, async) {
+          console.log(`XHR Request: Method=${method}, URL=${url}`);
+          super.open(method, url, async);
+        }
+
+        send(body) {
+          console.log(`XHR Body:`, body);
+          super.send(body);
+        }
+      }
+      window.XMLHttpRequest = LoggingXHR; // Override XMLHttpRequest for logging
+    };
+  </script>
+</body>
+</html>
